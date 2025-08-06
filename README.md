@@ -1,73 +1,240 @@
-# Welcome to your Lovable project
+# AI Chat Interface for n8n
 
-## Project info
+A modern, responsive ChatGPT-style interface built with React, TypeScript, and Tailwind CSS that connects to your n8n backend for real-time AI interactions.
 
-**URL**: https://lovable.dev/projects/cb649e35-1194-469e-a395-1b2945800210
+## 🌟 Features
 
-## How can I edit this code?
+- **Modern Chat UI**: Clean, minimal interface similar to ChatGPT
+- **Conversation Management**: Left sidebar with conversation history and organization by date
+- **Real-time Messaging**: Send messages and receive AI responses with typing effects
+- **Markdown Support**: Full markdown rendering including code blocks with syntax highlighting
+- **Dark/Light Mode**: Toggle between themes with persistent preference
+- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile
+- **Local Storage**: Conversation history persisted locally
+- **Error Handling**: Graceful handling of API errors and timeouts
+- **TypeScript**: Fully typed for better development experience
 
-There are several ways of editing your application.
+## 🚀 Quick Start
 
-**Use Lovable**
+### 1. Installation
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/cb649e35-1194-469e-a395-1b2945800210) and start prompting.
+Clone this repository and install dependencies:
 
-Changes made via Lovable will be committed automatically to this repo.
+```bash
+git clone <your-repo-url>
+cd ai-chat-interface
+npm install
+```
 
-**Use your preferred IDE**
+### 2. Configuration
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Create a `.env` file in the root directory and configure your n8n webhook URL:
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+```env
+REACT_APP_N8N_API_URL=https://your-n8n-instance.com/webhook/your-webhook-id
+```
 
-Follow these steps:
+You can also copy the example file:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+```bash
+cp .env.example .env
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Then edit the `.env` file with your actual n8n webhook URL.
 
-# Step 3: Install the necessary dependencies.
-npm i
+### 3. Run the Application
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The application will be available at `http://localhost:8080`.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🔧 n8n Backend Integration
 
-**Use GitHub Codespaces**
+### API Endpoint Configuration
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+The chat interface expects your n8n workflow to:
 
-## What technologies are used for this project?
+1. **Accept POST requests** with the following JSON structure:
+```json
+{
+  "message": "User's message text",
+  "conversationId": "optional-conversation-id",
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
 
-This project is built with:
+2. **Return responses** in one of these formats:
+```json
+{
+  "message": "AI response text"
+}
+// OR
+{
+  "response": "AI response text"
+}
+// OR
+{
+  "text": "AI response text"
+}
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### n8n Workflow Setup
 
-## How can I deploy this project?
+Here's a basic n8n workflow structure:
 
-Simply open [Lovable](https://lovable.dev/projects/cb649e35-1194-469e-a395-1b2945800210) and click on Share -> Publish.
+1. **Webhook Node**: Configure to accept POST requests
+2. **HTTP Request Node**: Send user message to your AI service (OpenAI, Claude, etc.)
+3. **Response Node**: Return the AI response
 
-## Can I connect a custom domain to my Lovable project?
+Example n8n workflow configuration:
 
-Yes, you can!
+```yaml
+Webhook Trigger:
+  - Method: POST
+  - Response Mode: Respond to Webhook
+  
+HTTP Request (to AI service):
+  - URL: https://api.openai.com/v1/chat/completions
+  - Method: POST
+  - Headers: 
+    - Authorization: Bearer YOUR_API_KEY
+    - Content-Type: application/json
+  - Body:
+    {
+      "model": "gpt-3.5-turbo",
+      "messages": [{"role": "user", "content": "{{$json.message}}"}]
+    }
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Respond to Webhook:
+  - Response Body: 
+    {
+      "message": "{{$json.choices[0].message.content}}"
+    }
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### Streaming Support (Optional)
+
+For real-time streaming responses, configure your n8n workflow to:
+
+1. Accept a `stream: true` parameter
+2. Return server-sent events or chunked responses
+3. Each chunk should be formatted as:
+```json
+{"chunk": "partial response text"}
+```
+
+## 🛠️ Customization
+
+### Styling
+
+The app uses a design system defined in `src/index.css` and `tailwind.config.ts`. You can customize:
+
+- **Colors**: Modify the CSS custom properties in `src/index.css`
+- **Themes**: Adjust light/dark mode colors
+- **Layout**: Update component styles using Tailwind classes
+
+### API Configuration
+
+Modify `src/config/api.ts` to customize:
+
+- Request timeout
+- Retry attempts
+- Headers
+- Error handling
+
+### Features
+
+The modular component structure makes it easy to:
+
+- Add new message types
+- Customize the sidebar
+- Modify the input area
+- Add file upload capabilities
+- Implement user authentication
+
+## 📁 Project Structure
+
+```
+src/
+├── components/
+│   ├── chat/
+│   │   ├── ChatArea.tsx       # Main chat display area
+│   │   ├── ChatInput.tsx      # Message input component
+│   │   ├── ChatMessage.tsx    # Individual message bubbles
+│   │   └── ChatSidebar.tsx    # Conversation history sidebar
+│   ├── providers/
+│   │   └── ThemeProvider.tsx  # Theme management
+│   └── ui/                    # Reusable UI components
+├── contexts/
+│   └── ChatContext.tsx        # Chat state management
+├── config/
+│   └── api.ts                 # API configuration and service
+├── pages/
+│   ├── Chat.tsx              # Main chat page
+│   └── NotFound.tsx          # 404 page
+├── hooks/                     # Custom React hooks
+├── lib/                       # Utility functions
+└── index.css                  # Design system and styles
+```
+
+## 🎨 Design System
+
+The application uses a comprehensive design system with:
+
+- **Semantic Color Tokens**: Consistent theming across light/dark modes
+- **Chat-Specific Colors**: Dedicated color scheme for chat interface
+- **Responsive Typography**: Optimized text sizing and spacing
+- **Component Variants**: Pre-built component variations
+
+## 🔧 Technical Details
+
+### Built With
+
+- **React 18**: Modern React with hooks and concurrent features
+- **TypeScript**: Full type safety and better developer experience
+- **Tailwind CSS**: Utility-first CSS framework
+- **Radix UI**: Accessible component primitives
+- **React Markdown**: Markdown rendering with syntax highlighting
+- **Next Themes**: Theme management
+- **React Router**: Client-side routing
+- **UUID**: Unique identifier generation
+
+### Browser Support
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## 🚦 Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `REACT_APP_N8N_API_URL` | Your n8n webhook URL | `YOUR_N8N_WEBHOOK_URL` |
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit changes: `git commit -m 'Add amazing feature'`
+4. Push to branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙋‍♂️ Support
+
+If you have questions or need help setting up the integration with your n8n backend:
+
+1. Check the configuration in `src/config/api.ts`
+2. Verify your n8n webhook is correctly configured
+3. Test your n8n endpoint directly first
+4. Check the browser console for any error messages
+
+## 🔄 Updates
+
+The application automatically checks for API configuration and provides helpful feedback when the n8n endpoint is not configured. Demo responses are shown until you configure your actual API endpoint.

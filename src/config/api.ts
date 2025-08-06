@@ -9,9 +9,25 @@
  * REACT_APP_N8N_API_URL=https://your-n8n-instance.com/webhook/your-webhook-id
  */
 
+// Determine the API URL based on environment
+const getApiUrl = () => {
+  // Use environment variable if set
+  // if (process.env.REACT_APP_N8N_API_URL) {
+  //   return process.env.REACT_APP_N8N_API_URL;
+  // }
+  
+  // // Use proxy in development, direct URL in production
+  // if (import.meta.env.DEV) {
+  //   return '/api/n8n/webhook-test/test';
+  // }
+  
+  // Production URL
+  return 'https://ammarahmad.app.n8n.cloud/webhook-test/test';
+};
+
 export const API_CONFIG = {
-  // n8n webhook URL - replace with your actual endpoint
-  N8N_API_URL: process.env.REACT_APP_N8N_API_URL || 'YOUR_N8N_WEBHOOK_URL',
+  // n8n webhook URL - uses proxy in development
+  N8N_API_URL: getApiUrl(),
   
   // Request timeout in milliseconds
   TIMEOUT: 30000,
@@ -45,7 +61,7 @@ export class ApiService {
       });
 
       clearTimeout(timeoutId);
-
+      
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -65,10 +81,11 @@ export class ApiService {
    */
   static async sendMessage(message: string, conversationId?: string) {
     const payload = {
-      message,
-      conversationId,
-      timestamp: new Date().toISOString(),
+      data: message,
     };
+
+    console.log('🚀 Sending API request to:', API_CONFIG.N8N_API_URL);
+    console.log('📤 Request payload:', payload);
 
     try {
       const response = await this.makeRequest(API_CONFIG.N8N_API_URL, {
@@ -76,9 +93,10 @@ export class ApiService {
         body: JSON.stringify(payload),
       });
 
+      console.log('📥 API Response:', response);
       return response;
     } catch (error) {
-      console.error('API Error:', error);
+      console.error('❌ API Error:', error);
       throw new Error('Failed to get response from AI assistant');
     }
   }
@@ -153,6 +171,7 @@ export class ApiService {
  * Utility function to check if API is configured
  */
 export const isApiConfigured = (): boolean => {
-  return API_CONFIG.N8N_API_URL !== 'YOUR_N8N_WEBHOOK_URL' && 
-         API_CONFIG.N8N_API_URL.startsWith('http');
+  const url = API_CONFIG.N8N_API_URL;
+  return url !== 'YOUR_N8N_WEBHOOK_URL' && 
+         (url.includes('ammarahmad.app.n8n.cloud') || url.includes('/api/n8n/'));
 };

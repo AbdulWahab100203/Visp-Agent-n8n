@@ -178,8 +178,12 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const callApiService = async (message: string): Promise<string> => {
     const { ApiService, isApiConfigured } = await import('@/config/api');
     
+    console.log('🔍 Checking API configuration...');
+    console.log('📡 API configured:', isApiConfigured());
+    
     // Check if API is configured
     if (!isApiConfigured()) {
+      console.log('⚠️ API not configured, using demo response');
       // Return demo response if API is not configured
       await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
       
@@ -196,8 +200,36 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
     }
     
     try {
+      console.log('🌐 Making API call to n8n webhook...');
       // Use the configured API service
       const response = await ApiService.sendMessage(message, currentConversation?.id);
+      
+      console.log('📨 Raw API response:', response);
+      
+      // Handle the nested response structure from your n8n webhook
+      if (response && typeof response === 'object') {
+        // Look for the nested output in the response structure
+        const findOutput = (obj: any): string | null => {
+          for (const key in obj) {
+            if (typeof obj[key] === 'string' && key === 'output') {
+              return obj[key];
+            } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+              const result = findOutput(obj[key]);
+              if (result) return result;
+            }
+          }
+          return null;
+        };
+        
+        const output = findOutput(response);
+        if (output) {
+          console.log('✅ Found output in response:', output);
+          return output;
+        }
+      }
+      
+      console.log('⚠️ No output found, using fallback response handling');
+      // Fallback to original response handling
       return response.message || response.response || response.text || 'Sorry, I could not process your request.';
     } catch (error) {
       console.error('API Error:', error);

@@ -28,19 +28,17 @@ npm install
 
 ### 2. Configuration
 
-Create a `.env` file in the root directory and configure your n8n webhook URL:
+The project is already configured with your n8n webhook URL:
+
+```env
+REACT_APP_N8N_API_URL=https://ammarahmad.app.n8n.cloud/webhook-test/test
+```
+
+If you need to change the webhook URL, create a `.env` file in the root directory:
 
 ```env
 REACT_APP_N8N_API_URL=https://your-n8n-instance.com/webhook/your-webhook-id
 ```
-
-You can also copy the example file:
-
-```bash
-cp .env.example .env
-```
-
-Then edit the `.env` file with your actual n8n webhook URL.
 
 ### 3. Run the Application
 

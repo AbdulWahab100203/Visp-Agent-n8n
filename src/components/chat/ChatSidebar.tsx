@@ -46,8 +46,9 @@ const ChatSidebar: React.FC = () => {
       <div className="p-4 border-b border-chat-border">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <MessageSquare className="h-6 w-6 text-primary" />
-            <span className="font-semibold text-lg">AI Chat</span>
+            <img src="/visp-logo.png" alt="" width={25} height={25}/>
+            {/* <MessageSquare className="h-6 w-6 text-primary" /> */}
+            <span className="font-semibold text-lg">Visp Chat</span>
           </div>
           <Button
             variant="ghost"

@@ -1,4 +1,4 @@
-# AI Chat Interface for n8n
+# Visp Chat Interface for n8n
 
 A modern, responsive ChatGPT-style interface built with React, TypeScript, and Tailwind CSS that connects to your n8n backend for real-time AI interactions.
 

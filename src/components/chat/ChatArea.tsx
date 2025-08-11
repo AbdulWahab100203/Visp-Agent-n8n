@@ -23,7 +23,7 @@ const ChatArea: React.FC = () => {
             <MessageSquare className="h-8 w-8 text-primary" />
           </div>
           
-          <h2 className="text-2xl font-semibold mb-4">Welcome to AI Chat</h2>
+          <h2 className="text-2xl font-semibold mb-4">Welcome to Visp Chat</h2>
           <p className="text-muted-foreground mb-6 leading-relaxed">
             Start a conversation with our AI assistant. Ask questions, get help with tasks, 
             or just have a friendly chat.

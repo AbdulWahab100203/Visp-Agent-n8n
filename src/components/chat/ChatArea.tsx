@@ -20,7 +20,7 @@ const ChatArea: React.FC = () => {
       <div className="flex-1 flex items-center justify-center bg-chat-background">
         <div className="text-center max-w-md mx-auto p-8">
           <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
-            <MessageSquare className="h-8 w-8 text-primary" />
+            <MessageSquare className="h-8 w-8 text-[#0a2571]" />
           </div>
           
           <h2 className="text-2xl font-semibold mb-4">Welcome to Visp Chat</h2>
@@ -31,7 +31,7 @@ const ChatArea: React.FC = () => {
           
           <Button 
             onClick={createNewConversation}
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
+            className="bg-[#0a2571] text-primary-foreground hover:bg-[#0a2571/90]"
           >
             <Sparkles className="h-4 w-4 mr-2" />
             Start New Chat
@@ -40,9 +40,9 @@ const ChatArea: React.FC = () => {
           <div className="mt-8 text-sm text-muted-foreground">
             <p className="mb-2">Try asking:</p>
             <div className="space-y-1">
-              <div className="bg-muted/50 rounded-lg p-2">"Explain quantum computing"</div>
-              <div className="bg-muted/50 rounded-lg p-2">"Help me write a Python function"</div>
-              <div className="bg-muted/50 rounded-lg p-2">"What's the weather like today?"</div>
+              <div className="bg-muted/50 rounded-lg p-2">"What do u know about Visp"</div>
+              <div className="bg-muted/50 rounded-lg p-2">"What is the development process of Visp"</div>
+              <div className="bg-muted/50 rounded-lg p-2">"How we can estimate story in Visp"</div>
             </div>
           </div>
         </div>
@@ -85,7 +85,7 @@ const ChatArea: React.FC = () => {
               {/* Typing indicator */}
               {isTyping && (
                 <div className="flex gap-4 p-6">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#0a2571] text-white flex items-center justify-center">
                     <MessageSquare className="h-4 w-4" />
                   </div>
                   <div className="flex-1">

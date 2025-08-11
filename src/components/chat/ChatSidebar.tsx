@@ -66,7 +66,7 @@ const ChatSidebar: React.FC = () => {
         
         <Button 
           onClick={createNewConversation}
-          className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+          className="w-full bg-[#0a2571] text-primary-foreground hover:bg-[#0a2571/90]"
         >
           <Plus className="h-4 w-4 mr-2" />
           New Chat
